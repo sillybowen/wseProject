@@ -29,8 +29,8 @@ import java.io.IOException;
 
 public class MapReduceTester {
   public static void loadFilePath() throws IOException{
-      //final File folder = new File("/Users/silly/Documents/nyu/homework/wse/wse/hw3/data/only1");
-      final File folder = new File("./data");
+      final File folder = new File("/Users/silly/Documents/nyu/homework/wse/wse/hw3/data/small");
+      //final File folder = new File("./data");
 
       FileWriter fstream = new FileWriter("./tmp/tmp");
       BufferedWriter out = new BufferedWriter(fstream);
@@ -65,7 +65,7 @@ public class MapReduceTester {
      job.setReducerClass(IndexerReducer.class);
 
      job.setOutputKeyClass(Text.class);
-     job.setOutputValueClass(IntWritable.class);
+     job.setOutputValueClass(Text.class);
 
      System.exit(job.waitForCompletion(true) ? 0 : 1);
     }

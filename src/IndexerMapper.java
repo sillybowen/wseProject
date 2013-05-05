@@ -1,11 +1,14 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Iterator;
+import java.util.Vector;
 
 
 import org.apache.hadoop.io.IntWritable;
@@ -16,44 +19,51 @@ import org.apache.hadoop.conf.Configuration;
 
 
 public class IndexerMapper
-  extends Mapper<LongWritable, Text, Text, IntWritable> {
+  extends Mapper<LongWritable, Text, Text, Text> {
 
 
   private static final int MISSING = 9999;
 
-
-  @Override
+  public void output(Vector<String> tokens,String name) throws IOException {
+	  File f = new File(name);
+	  FileWriter fstream = new FileWriter("./tmp/"+f.getName());
+	  BufferedWriter out = new BufferedWriter(fstream);
+	  for (int i = 0; i<tokens.size();i++)
+		  out.write(tokens.get(i)+"\n");
+	  out.close();
+  }
   public void map(LongWritable key, Text value, Context context)
       throws IOException, InterruptedException {
-
     String line = value.toString();
-    	
-
-    Map<String, Integer> wordcount =  readFile(line);
-    
+    File f = new File(line);
+    String fileName = f.getName();
+    Vector<String> tokens = HTMLParser.parse(line);
+    Map<String, PostList> wordcount =  count(tokens,fileName);
+    //output(tokens,FileName);
     Iterator it = wordcount.entrySet().iterator(); 
     String word;
-    Integer count;
+    PostList count;
     while (it.hasNext()) {
     	Map.Entry pairs = (Map.Entry)it.next();      
     	word = (String) pairs.getKey();
-    	count = (Integer) pairs.getValue();
-    	context.write( new Text(word), new IntWritable(count));
+    	count = (PostList) pairs.getValue();
+    	context.write( new Text(word), new Text(count.toString()));
     }
   }
-  public Map<String,Integer> readFile(String path) throws IOException {
-	  Map<String,Integer> ret = new HashMap<String,Integer>();
-	  File file = new File(path);
-      BufferedReader reader = new BufferedReader( new FileReader (file));
-      String         line = null;
-      while( ( line = reader.readLine() ) != null ) {
-    	  if (ret.containsKey(line)) {
-    		  ret.put(line, ret.get(line)+1);
-    	  } else {
-    		  ret.put(line, 1);
-    	  }
-      }
-      return ret;
+  
+  public Map<String,PostList> count (Vector<String> tokens,String fileName) {
+	Map<String,PostList> ret = new HashMap<String,PostList>();
+	for (int i = 0; i<tokens.size();i++) {
+		PostList pl;
+		if (!ret.containsKey(tokens.get(i))) {
+			pl = new PostList(fileName);
+			ret.put(tokens.get(i), pl);
+		} else {
+			pl = ret.get(tokens.get(i));
+		}
+		pl.addPost(i);
+	}
+	return ret;
   }
 }
 
