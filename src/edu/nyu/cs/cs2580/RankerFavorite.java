@@ -58,7 +58,9 @@ public class RankerFavorite extends Ranker {
       Document doc = null;
       int docid = -1;
       System.out.println("run query!");
+      int c = 0;
       while ((doc = _indexer.nextDoc(query, docid)) != null) {
+    	  c++;
           //          double score = cosineScore(query,doc._docid);
           double score = jmsScore(query,doc._docid);
           rankQueue.add(new ScoredDocument(doc, score));
@@ -67,7 +69,7 @@ public class RankerFavorite extends Ranker {
           }
           docid = doc._docid;
       }
-
+      System.out.println("next doc:"+Integer.toString(c));
       Vector<ScoredDocument> results = new Vector<ScoredDocument>();
       ScoredDocument scoredDoc = null;
       while ((scoredDoc = rankQueue.poll()) != null) {

@@ -31,10 +31,7 @@ public class IndexerInvertedOccurrence extends IndexerInverted implements Serial
   private int currentLoaded = -1;
   private static final int seperateNum = 50;
   private static final long serialVersionUID = 1057111905740085030L;
-    // _termToOccus[0] info for term[0]
-    // _termToOccus[0][0] info for term[0] at a doc
-    // _termToOccus[0][0][0] docid
-    // _termToOccus[0][0][x] position
+  
   private ArrayList<ArrayList<ArrayList<Integer> > > _termToOccus =
         new ArrayList<ArrayList<ArrayList<Integer> > > ();
   private ArrayList<Integer> _termDocFreq = new ArrayList<Integer>();
@@ -360,7 +357,6 @@ public class IndexerInvertedOccurrence extends IndexerInverted implements Serial
   }
   public int docPhraseCount(Vector<Integer> phrase,int did) {
       int ret = 0;
-      //      System.out.println("docPhraseCount:"+_documents.get(did).getTitle());
       Vector<ArrayList<Integer> > termDocInfo = new Vector<ArrayList<Integer> >();
       Vector<Integer> pointer = new Vector<Integer>();
 
@@ -369,22 +365,12 @@ public class IndexerInvertedOccurrence extends IndexerInverted implements Serial
           termDocInfo.add(getTermDocInfo(phrase.get(i),did));
           if (termDocInfo.get(i)==null)
               return 0;
-          //          for (int j = 0; j<termDocInfo.get(i).size();j++)
-          //  System.out.print(termDocInfo.get(i).get(j)+" ");
-          //          System.out.println();
       }
       if (phrase.size()==1)
           return termDocInfo.get(0).size()-1;
-      //      System.out.print("Start!");
-      //      for (int i = 0; i<phrase.size();i++) {
-      //          System.out.print(termDocInfo.get(i).get(pointer.get(i))+" ");
-      //      }
-      //            System.out.println();
-
 
       while (pointer.get(0)<termDocInfo.get(0).size()) {
           // check if continus
-          //          System.out.println("ret"+ret);
 
           // update c
           for (int i = 1; i<phrase.size();i++) {
@@ -517,17 +503,8 @@ public class IndexerInvertedOccurrence extends IndexerInverted implements Serial
           System.out.println(pairs.getKey() + ":" + 
                              Integer.toString(corpusTermFrequency(term))+":"+
                              Integer.toString(corpusDocFrequencyByTerm(term)));
-          //          it.remove(); // avoids a ConcurrentModificationException
       }
-      /*      for (int i = 0; i<_terms.size();i++) {
-          System.out.println(_terms.get(i)+
-                           ":"+Integer.toString(corpusTermFrequency(_terms.get(i)))+
-                           ":"+Integer.toString(corpusDocFrequencyByTerm(_terms.get(i))));*/
-          /*          ArrayList<DocOccPair> dop = _termToOccus.get(i);
-          for (int j = 0;j<dop.size();j++) {
-              System.out.println(Integer.toString(i)+" "+Integer.toString(dop.get(j).getOcc())+" "+Integer.toString(dop.get(j).getDid()));
-          }
-          System.out.println("===");*/
+
   }
     public static void gc() {
         Object obj = new Object();

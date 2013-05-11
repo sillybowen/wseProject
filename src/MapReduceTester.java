@@ -29,7 +29,7 @@ import java.io.IOException;
 
 public class MapReduceTester {
   public static void loadFilePath() throws IOException{
-      final File folder = new File("/Users/silly/Documents/nyu/homework/wse/wse/hw3/data/small");
+      final File folder = new File("./data/wiki");
       //final File folder = new File("./data");
 
       FileWriter fstream = new FileWriter("./tmp/tmp");
@@ -44,15 +44,6 @@ public class MapReduceTester {
   }
   public static void main(String[] args) throws Exception {
 	  loadFilePath();
-/*	  Configuration conf = new Configuration();
-	  String pars = new String();
-	  for (int i = 2; i< args.length;i++)
-	   if (i == 2) 
-		 pars = args[i];
-       else
-        pars= pars+","+args[i];
-     conf.set("pars",pars);
-*/
      Job job = new Job();
      job.setJarByClass(MapReduceTester.class);
      job.setJobName("Indexer");

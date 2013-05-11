@@ -3,19 +3,34 @@ import java.util.ArrayList;
 
 public class PostList {
 	String _fileName;
+	int _id;
 	ArrayList<Integer> _posts = new ArrayList<Integer>();
-	public  PostList(String fileName) {
+	public  PostList(String fileName, int id) {
 		_fileName = fileName;
+		_id = id;
+	}
+	public PostList() {
 	}
 	public void addPost(int i) {
 		_posts.add(i);
 	}
 	public String toString() {
-		String ret = "\t"+_fileName;
-		ret+="\t"+ Integer.toString(_posts.size());
+		String ret = Integer.toString(_id);		
+		ret+=" "+ Integer.toString(_posts.size());
 		for (int i = 0; i<_posts.size();i++) {
-			ret+= "\t"+ Integer.toString(_posts.get(i));
+			ret+= " "+ Integer.toString(_posts.get(i));
 		}
 		return ret;
+	}
+	public void load(String s) {
+//		System.out.println(s);
+		String[] tmp = s.split("[ ]");
+	//	_fileName = tmp[0];
+		_id = Integer.parseInt(tmp[0]);
+		_posts.clear();
+		int sz = Integer.parseInt(tmp[1]);
+		for (int i = 0; i<sz;i++) {
+			_posts.add(Integer.parseInt(tmp[2+i]));
+		}
 	}
 }

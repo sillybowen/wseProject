@@ -146,6 +146,8 @@ public abstract class Indexer {
         return new IndexerInvertedOccurrence(options);
       } else if (options._indexerType.equals("inverted-compressed")) {
         return new IndexerInvertedCompressed(options);
+      } else if (options._indexerType.equals("hadoop")) {
+        return new IndexHadoop(options);
       }
       return null;
     }

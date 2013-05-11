@@ -6,3 +6,4 @@ javac -cp /usr/local/Cellar/hadoop/1.1.1/libexec/hadoop-core-1.1.1.jar src/*.jav
 cp ./src/*.class ./
 hadoop MapReduceTester
 rm *.class
+rm ./src/*.class
