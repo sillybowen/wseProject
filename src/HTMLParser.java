@@ -21,18 +21,15 @@ public class HTMLParser {
         return a;
     }
 
-    public static Vector<String> parse(String fileName) {
-    	StopWords sw = new StopWords();
+    public static Vector<String> parse(String fileContent) {
         String current = "";
         int bracketCount = 0;
         char c;
         int script = 0;
         Vector<String> ret = new Vector<String>();
-        try {
-        BufferedReader reader = new BufferedReader( new FileReader (fileName));
         int r;
-        while ((r = reader.read()) != -1) {
-            c = (char) r;
+        for (int i = 0; i<fileContent.length();i++)  {
+            c = fileContent.charAt(i);
             if (bracketCount>0) {
                 if (current.length()<=10)
                     current+=c;
@@ -58,10 +55,9 @@ public class HTMLParser {
                 }
             }
             else {
-                if (script==0 && current.length()>0 && bracketCount == 0 && !sw.contain(current)) {
+                if (script==0 && current.length()>0 && bracketCount == 0) {
                 	String tmp = stemm(current);
-                	if (!sw.contain(tmp))
-                		ret.add(tmp);
+                	ret.add(tmp);
                 }
                 current = "";
                 if (c=='<') {
@@ -69,10 +65,6 @@ public class HTMLParser {
                     current="<";
                 }
             }
-        }
-        reader.close();
-        } catch (IOException e){
-            System.out.println("readfile error!");
         }
         return ret;
     }

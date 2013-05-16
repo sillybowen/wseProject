@@ -28,36 +28,25 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 
 public class MapReduceTester {
-  public static void loadFilePath() throws IOException{
-      final File folder = new File("./data/wiki");
-      //final File folder = new File("./data");
-
-      FileWriter fstream = new FileWriter("./tmp/tmp");
-      BufferedWriter out = new BufferedWriter(fstream);
-
-      for (final File fileEntry : folder.listFiles()) {
-          if (!fileEntry.isDirectory()) {
-              out.write(fileEntry.getPath()+"\n");
-          }
-      }
-      out.close();
-  }
   public static void main(String[] args) throws Exception {
-	  loadFilePath();
+     long start = System.nanoTime();
      Job job = new Job();
      job.setJarByClass(MapReduceTester.class);
      job.setJobName("Indexer");
 
 
-     FileInputFormat.addInputPath(job, new Path("./tmp/tmp"));
+     FileInputFormat.addInputPath(job, new Path("./data/only1"));
      FileOutputFormat.setOutputPath(job, new Path("./output"));
 
      job.setMapperClass(IndexerMapper.class);
+     job.setCombinerClass(IndexerCombiner.class);
      job.setReducerClass(IndexerReducer.class);
 
      job.setOutputKeyClass(Text.class);
      job.setOutputValueClass(Text.class);
 
      System.exit(job.waitForCompletion(true) ? 0 : 1);
+	  long elapsedTime = System.nanoTime() - start;
+	  System.out.println(elapsedTime);
     }
 }

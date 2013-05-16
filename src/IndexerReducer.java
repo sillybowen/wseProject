@@ -15,9 +15,21 @@ import org.apache.hadoop.mapreduce.Reducer;
 
 public class IndexerReducer
   extends Reducer<Text, Text, Text, Text> {
-    public static class PLComparator implements Comparator<PostList> {
-        public int compare(PostList doc1, PostList doc2) {
-            if (doc1._id<doc2._id) return -1;
+    public static class PLComparator implements Comparator<String> {
+        public int compare(String doc1, String doc2) {
+        	int id1 = 0;
+        	int id2 = 0;
+        	int idx = 0;
+        	while (doc1.charAt(idx)<='9' && doc1.charAt(idx)>='0') {
+        		id1 = id1*10 + doc1.charAt(idx) -'0';
+        		idx ++;
+        	}
+        	idx = 0;
+        	while (doc2.charAt(idx)<='9' && doc2.charAt(idx)>='0') {
+        		id2 = id2*10 + doc2.charAt(idx) -'0';
+        		idx ++;
+        	}
+            if (id1<id2) return -1;
             return 1;
         }
     }
@@ -26,22 +38,25 @@ public class IndexerReducer
       Context context)
       throws IOException, InterruptedException {
 
-    Vector<PostList> pls = new Vector<PostList>();
+    Vector<String> pls = new Vector<String>();
     
     for (Text value : values) {
-    	PostList pl = new PostList();
-    	pl.load(value.toString());
-    	pls.add(pl);
+    	String[] vs = value.toString().split("[\t]");
+    	for (String s: vs) {
+    		if (s.length()!=0)
+    		pls.add(s);
+    	}
     }
     
     Collections.sort(pls, new PLComparator());
     
-    String count =Integer.toString(pls.size());
-    for (PostList pl : pls) {
-    	count+="\t"+pl.toString();
- 
+    StringBuffer sb = new StringBuffer();
+    sb.append(pls.size());
+    for (String pl : pls) {
+    	sb.append("\t");
+    	sb.append(pl);
     }
     
-    context.write(key, new Text(count));
+    context.write(key, new Text(sb.toString()));
   }
 }

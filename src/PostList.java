@@ -9,6 +9,10 @@ public class PostList {
 		_fileName = fileName;
 		_id = id;
 	}
+	public  PostList(int id) {
+		_id = id;
+	}
+
 	public PostList() {
 	}
 	public void addPost(int i) {

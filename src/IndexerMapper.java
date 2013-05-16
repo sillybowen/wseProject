@@ -36,11 +36,16 @@ public class IndexerMapper
   public void map(LongWritable key, Text value, Context context)
       throws IOException, InterruptedException {
     String line = value.toString();
-    File f = new File(line);
-    String fileName = f.getName();
+    int id = 0;
+    int ind = 0;
+    while (line.charAt(ind)!=':') {
+    	id= id*10 + line.charAt(ind)-'0';
+    	
+    	ind++;
+        
+    }
     Vector<String> tokens = HTMLParser.parse(line);
-    Map<String, PostList> wordcount =  count(tokens,fileName);
-    //output(tokens,FileName);
+    Map<String, PostList> wordcount =  count(tokens,id);
     Iterator it = wordcount.entrySet().iterator(); 
     String word;
     PostList count;
@@ -51,30 +56,12 @@ public class IndexerMapper
     	context.write( new Text(word), new Text(count.toString()));
     }
   }
-  public Map<String,Integer> loadFileToID() {
-		Map<String,Integer> ret = new HashMap<String,Integer>();
-		try {
-			BufferedReader br = null;
-			String sCurrentLine;
-			br = new BufferedReader(new FileReader("./tmp/tmp"));
-			int count = 0;
-			while ((sCurrentLine = br.readLine()) != null) {
-				File f = new File(sCurrentLine);
-				ret.put(f.getName(), count);
-				count++;
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	  return ret;
-  }
-  public Map<String,PostList> count (Vector<String> tokens,String fileName) {
-	Map<String,Integer> fileToid = loadFileToID();
+  public Map<String,PostList> count (Vector<String> tokens,int id) {
 	Map<String,PostList> ret = new HashMap<String,PostList>();
 	for (int i = 0; i<tokens.size();i++) {
 		PostList pl;
 		if (!ret.containsKey(tokens.get(i))) {
-			pl = new PostList(fileName,fileToid.get(fileName));
+			pl = new PostList(id);
 			ret.put(tokens.get(i), pl);
 		} else {
 			pl = ret.get(tokens.get(i));
